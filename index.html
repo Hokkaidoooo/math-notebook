@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#254e3b">
+  <title>数学错题本 · 在线阅读</title>
+  <link rel="icon" href="brand/favicon.ico" type="image/x-icon" sizes="16x16 24x24 32x32 48x48 64x64 128x128 256x256">
+  <link rel="icon" href="brand/logo.svg" type="image/svg+xml" sizes="any">
+  <link rel="stylesheet" href="vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="reader.css">
+  <script src="data.js" defer></script>
+  <script src="vendor/katex/katex.min.js" defer></script>
+  <script src="vendor/katex/auto-render.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body data-reading-mode="online">
+  <div class="sidebar-shade" id="sidebar-shade"></div>
+  <aside class="sidebar" id="sidebar" aria-label="专题导航">
+    <a class="brand" href="index.html" aria-label="数学错题本首页">
+      <img class="brand-symbol" src="brand/logo.svg" width="46" height="46" alt="" aria-hidden="true">
+      <span><strong>数学错题本</strong><small>题目 · 解法 · 易错点</small></span>
+    </a>
+    <div class="sidebar-heading">按专题复习</div>
+    <nav id="topic-navigation" aria-label="数学专题"></nav>
+    <div class="sidebar-footer"><span class="offline-dot"></span><span id="reading-status">本地笔记，随时回看</span></div>
+  </aside>
+
+  <main class="main-shell">
+    <header class="topbar">
+      <button class="icon-button menu-toggle" id="sidebar-toggle" type="button" aria-label="打开专题导航" aria-expanded="false" aria-controls="sidebar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <label class="search-field" for="search-input">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+        <input id="search-input" type="search" placeholder="搜索题目、解法、易错点或出处" autocomplete="off">
+        <span class="search-key" aria-hidden="true">/</span>
+      </label>
+      <button class="reading-options" id="reading-options" type="button" aria-haspopup="dialog" aria-controls="reading-modes">阅读方式</button>
+    </header>
+
+    <div class="content-shell">
+      <div class="notice" id="notice" role="alert" hidden></div>
+      <section class="collection-heading">
+        <div>
+          <p class="eyebrow" id="collection-subject">数学复习</p>
+          <h1 id="collection-title">全部题目与笔记</h1>
+          <p class="collection-description" id="collection-description">沿着专题回看题目，把解法和容易出错的细节放在一起。</p>
+        </div>
+        <div class="collection-stats" id="collection-stats" aria-label="笔记概况"></div>
+      </section>
+
+      <section class="filterbar" aria-label="筛选笔记">
+        <label class="select-field"><span>来源</span><select id="source-filter" aria-label="按来源筛选"><option value="">全部来源</option></select></label>
+        <label class="select-field"><span>复习</span><select id="review-filter" aria-label="按复习状态筛选"><option value="all">全部记录</option><option value="favorites">已收藏</option><option value="pending">待复习</option><option value="mastered">已掌握</option></select></label>
+        <label class="check-field"><input id="notes-filter" type="checkbox"><span>有文字解法或提醒</span></label>
+        <button class="text-button reset-filters" id="reset-filters" type="button" hidden>清除筛选</button>
+      </section>
+
+      <div class="results-heading">
+        <p id="result-count" role="status" aria-live="polite">正在读取笔记…</p>
+        <span class="results-hint">点击题目，查看原图与笔记</span>
+      </div>
+      <section class="entry-grid" id="entry-grid" aria-label="数学题目与笔记"></section>
+      <div class="empty-state" id="empty-state" hidden>
+        <span class="empty-symbol" aria-hidden="true">∅</span>
+        <h2>没有找到匹配的笔记</h2>
+        <p>试试更短的关键词，或清除筛选条件。</p>
+        <button class="primary-button" id="empty-reset" type="button">查看全部笔记</button>
+      </div>
+      <nav class="pagination" id="pagination" aria-label="分页"></nav>
+      <footer class="page-footer" id="page-footer"></footer>
+    </div>
+  </main>
+
+  <dialog class="reading-modes" id="reading-modes" aria-labelledby="reading-modes-title">
+    <header class="reading-modes-header">
+      <h2 id="reading-modes-title">选择阅读方式</h2>
+      <form method="dialog"><button class="icon-button close-button" id="close-reading-modes" type="submit" aria-label="关闭阅读方式"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></form>
+    </header>
+    <section class="reading-mode-card" aria-labelledby="online-mode-title">
+      <h3 id="online-mode-title">在线阅读</h3>
+      <p>手机开流量或连接 Wi-Fi，打开网址即可看题。题图随阅读加载，无需导入资料包。</p>
+      <a class="primary-button reading-mode-link" id="online-reading-link" href="https://hokkaidoooo.github.io/math-notebook/">打开在线版</a>
+      <p class="reading-mode-current" id="current-online-mode" hidden>当前正在在线阅读</p>
+    </section>
+    <section class="reading-mode-card" aria-labelledby="offline-mode-title">
+      <h3 id="offline-mode-title">离线阅读</h3>
+      <p>提前把完整题图存到手机，飞机上或没有网络时也能看。</p>
+      <a class="primary-button reading-mode-link" id="offline-download" href="https://github.com/Hokkaidoooo/math-notebook/releases/download/offline-20261117/math-notebook-android-offline.zip" download>下载安卓离线版 · 约 480 MB</a>
+      <p class="reading-mode-current" id="current-offline-mode" hidden>当前正在离线阅读</p>
+      <ol>
+        <li>联网时下载离线包，并在手机上解压。</li>
+        <li>用 Chrome 打开“数学错题本_手机版.html”。</li>
+        <li>选择包内的“题图资料包.zip”，完成后即可断网阅读。</li>
+      </ol>
+      <p class="reading-mode-note">每次重新打开离线阅读器，选择一次题图资料包即可。</p>
+    </section>
+    <p class="reading-mode-note">收藏与掌握标记保存在当前浏览器。在线版与本地离线版的记录分别保存。</p>
+  </dialog>
+
+  <dialog class="entry-dialog" id="entry-dialog" aria-labelledby="detail-title">
+    <div class="dialog-shell">
+      <header class="detail-header">
+        <div class="detail-heading"><h2 id="detail-title"></h2></div>
+        <button class="icon-button close-button" id="close-entry" type="button" aria-label="关闭题目"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+      </header>
+      <div class="detail-bar">
+        <div class="detail-tags" id="detail-tags"></div>
+        <div class="detail-toolbar" id="detail-toolbar"></div>
+      </div>
+      <div class="detail-scroll" id="detail-scroll">
+        <div class="detail-columns" id="detail-columns">
+          <section class="image-panel" id="image-panel" aria-labelledby="image-panel-title"><h3 id="image-panel-title">题图与解答原图 <span>点击放大</span></h3><div class="image-gallery" id="image-gallery"></div></section>
+          <section class="notes-panel" id="notes-panel" aria-labelledby="notes-panel-title">
+            <h3 id="notes-panel-title">笔记与解法</h3>
+            <p class="original-title" id="original-title" hidden></p>
+            <div id="notes-context" hidden></div>
+            <div class="correction-note" id="correction-note" hidden><h4>公式核对</h4><div class="note-content" id="correction-content"></div></div>
+            <div class="math-notice" id="math-notice" role="status" hidden></div>
+            <div class="note-content" id="note-content"></div>
+            <section class="related-knowledge" id="related-knowledge" aria-labelledby="related-knowledge-title" hidden><h4 id="related-knowledge-title">相关知识与方法</h4><p class="knowledge-empty" id="knowledge-empty" hidden>暂未关联到对应的知识笔记。</p><div id="knowledge-list"></div></section>
+            <details class="original-order" id="original-order" hidden><summary>按原始顺序阅读</summary><div class="note-content" id="original-content"></div></details>
+            <section class="source-panel" aria-label="原始出处"><span class="source-label">原始出处</span><p id="detail-source"></p><p class="source-path" id="detail-path"></p></section>
+          </section>
+        </div>
+      </div>
+      <footer class="detail-footer"><button class="secondary-button" id="previous-entry" type="button">← 上一条</button><span id="detail-position"></span><button class="secondary-button" id="next-entry" type="button">下一条 →</button></footer>
+    </div>
+  </dialog>
+
+  <dialog class="image-dialog" id="image-dialog" aria-label="原图查看">
+    <div class="image-dialog-shell"><header><span id="image-caption"></span><div><button class="secondary-button" id="image-zoom-toggle" type="button" aria-pressed="false">放大</button><a class="image-original-link" id="open-original-image" target="_blank" rel="noopener">打开原图</a><button class="icon-button close-button" id="close-image" type="button" aria-label="关闭原图"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div></header><div class="zoom-image-wrap"><div class="image-error" id="zoom-image-error" role="alert" hidden></div><img id="zoom-image" alt=""></div></div>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
