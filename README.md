@@ -1,5 +1,7 @@
 # 数学错题本
 
+**简体中文** · [English](README.en.md) · [Español](README.es.md) · [日本語](README.ja.md)
+
 [打开在线阅读](https://hokkaidoooo.github.io/math-notebook/)
 
 2611 条题目与笔记、35 个数学专题、4650 张原图。按专题和关键词查找题目，查看解法、易错提醒、相关知识与公式；题图可放大阅读。
