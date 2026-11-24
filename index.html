@@ -14,6 +14,7 @@
   <script src="data.js" defer></script>
   <script src="vendor/katex/katex.min.js" defer></script>
   <script src="vendor/katex/auto-render.min.js" defer></script>
+  <script src="math-renderer.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body data-reading-mode="online">
@@ -80,14 +81,19 @@
       <h2 id="reading-modes-title">选择阅读方式</h2>
       <form method="dialog"><button class="icon-button close-button" id="close-reading-modes" type="submit" aria-label="关闭阅读方式"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></form>
     </header>
+    <section class="reading-mode-card" id="local-reading-mode" aria-labelledby="local-mode-title" hidden>
+      <h3 id="local-mode-title">电脑本地阅读</h3>
+      <p>电脑连接网络或断网时，都直接打开本地错题本。题图、笔记和公式随文件保存，无需联网。</p>
+      <p class="reading-mode-current">当前正在电脑本地阅读</p>
+    </section>
     <section class="reading-mode-card" aria-labelledby="online-mode-title">
-      <h3 id="online-mode-title">在线阅读</h3>
+      <h3 id="online-mode-title">手机在线阅读</h3>
       <p>手机开流量或连接 Wi-Fi，打开网址即可看题。题图随阅读加载，无需导入资料包。</p>
       <a class="primary-button reading-mode-link" id="online-reading-link" href="https://hokkaidoooo.github.io/math-notebook/">打开在线版</a>
       <p class="reading-mode-current" id="current-online-mode" hidden>当前正在在线阅读</p>
     </section>
     <section class="reading-mode-card" aria-labelledby="offline-mode-title">
-      <h3 id="offline-mode-title">离线阅读</h3>
+      <h3 id="offline-mode-title">手机离线阅读</h3>
       <p>提前把完整题图存到手机，飞机上或没有网络时也能看。</p>
       <a class="primary-button reading-mode-link" id="offline-download" href="https://github.com/Hokkaidoooo/math-notebook/releases/download/offline-20261117/math-notebook-android-offline.zip" download>下载安卓离线版 · 约 480 MB</a>
       <p class="reading-mode-current" id="current-offline-mode" hidden>当前正在离线阅读</p>

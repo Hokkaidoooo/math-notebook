@@ -7,7 +7,7 @@
   const REVIEW_STORAGE_KEY = "math-notebook-review-v1";
   const DIALOG_IDS = ["entry-dialog", "image-dialog", "reading-modes"];
   const READING_MODES = new Map([
-    ["local", { label: "阅读方式", status: "本地笔记，随时回看" }],
+    ["local", { label: "阅读方式", status: "电脑本地阅读 · 无需联网" }],
     ["online", { label: "在线阅读", status: "在线阅读 · 题图按需加载" }],
     ["offline", { label: "离线阅读", status: "离线阅读 · 完整题图已载入" }]
   ]);
@@ -29,7 +29,7 @@
     "original-content", "previous-entry", "next-entry", "detail-position", "image-dialog",
     "zoom-image", "zoom-image-error", "image-caption", "image-zoom-toggle", "open-original-image", "sidebar-toggle",
     "reading-options", "reading-modes", "reading-status", "online-reading-link", "current-online-mode",
-    "offline-download", "current-offline-mode"
+    "offline-download", "current-offline-mode", "local-reading-mode"
   ].map(id => [id, byId(id)]));
 
   const state = { subject: "", topic: "", source: "", query: "", review: "all", notesOnly: false, page: 1 };
@@ -287,7 +287,7 @@
 
   function sourcePathHtml(entry) {
     const source = sourceMap.get(entry.sourceId);
-    const sourceHref = "../" + source.path.replaceAll("\\", "/").split("/").map(encodeURIComponent).join("/");
+    const sourceHref = "sources/" + encodeURIComponent(source.id) + ".html#L" + entry.line;
     const sourcePath = escapeHtml(source.path.replaceAll("/", "\\"));
     const label = data.sourceLinksAvailable === false ? sourcePath : `<a href="${escapeHtml(sourceHref)}" target="_blank" rel="noopener">${sourcePath}</a>`;
     return `${label} · 第 ${entry.line} 行起`;
@@ -484,6 +484,7 @@
     if (!mode) throw new Error("阅读方式配置无效，请使用完整的新版阅读器。");
     dom["reading-options"].textContent = mode.label;
     dom["reading-status"].textContent = mode.status;
+    dom["local-reading-mode"].hidden = readingMode !== "local";
     dom["online-reading-link"].hidden = readingMode === "online";
     dom["current-online-mode"].hidden = readingMode !== "online";
     dom["offline-download"].hidden = readingMode === "offline";
@@ -491,22 +492,10 @@
   }
 
   function renderMath(element) {
-    if (typeof window.renderMathInElement !== "function") {
-      showNotice("公式排版组件未载入。请确认 vendor 文件夹与网页放在一起；公式当前显示为原始写法。");
-      return;
+    if (!window.MathNotebookMath) {
+      throw new Error("公式排版脚本未载入，请检查 math-renderer.js 是否与网页放在一起。");
     }
-    window.renderMathInElement(element, {
-      delimiters: [
-        { left: "$$", right: "$$", display: true },
-        { left: "\\[", right: "\\]", display: true },
-        { left: "$", right: "$", display: false },
-        { left: "\\(", right: "\\)", display: false }
-      ],
-      throwOnError: false,
-      errorColor: "#a64232",
-      trust: false,
-      strict: "warn"
-    });
+    window.MathNotebookMath.render(element, showNotice);
   }
 
   function handleImageError(image) {
